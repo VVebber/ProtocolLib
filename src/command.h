@@ -27,6 +27,7 @@ public:
   // void setVariableData(float integer);
   void addVariableData(int inteter);
   QString getVariableData();
+  CommandType getCommandType();
   int atVariableData(int i);
 private:
     CommandType m_command;

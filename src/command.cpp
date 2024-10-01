@@ -11,9 +11,13 @@ bool Command::isCommand(QString str)
   return m_command == str;
 }
 
+Command::CommandType Command::getCommandType(){
+  return m_command;
+}
+
 bool Command::isCommand(CommandType str)
 {
-
+  return m_command == str;
 }
 
 int Command::size(){
