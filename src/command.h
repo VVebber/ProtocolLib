@@ -2,9 +2,9 @@
 #define COMMAND_H
 #include <QVariant>
 
-QString pointGraphing = "point for graphing function";
-QString drawStartOrFin = "setting draw point";
-QString typeSignal = "setting the type of signal";
+#define pointGraphing "point for graphing function"
+#define drawStartOrFin  "setting draw point"
+#define typeSignalSetting  "setting the type of signal"
 
 class Command
 {
