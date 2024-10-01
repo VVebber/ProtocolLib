@@ -15,17 +15,18 @@ QByteArray ProtocolJSON::encode(Command::CommandType command, QVariant data)
 
   if(data.isValid())
   {
-    if (data.canConvert<int>())
+
+    if (data.canConvert<QString>())
+    {
+      message["VariableData"] = data.toString();
+    }
+    else if (data.canConvert<int>())
     {
       message["VariableData"] = data.toInt();
     }
     else if (data.canConvert<double>())
     {
       message["VariableData"] = data.toDouble();
-    }
-    else if (data.canConvert<QString>())
-    {
-      message["VariableData"] = data.toString();
     }
     else if (data.canConvert<QVariantList>())
     {
