@@ -20,7 +20,8 @@ public:
   virtual Command decode(QByteArray messageCode) = 0;
 
   virtual ~Protocol() = default;
-private:
+
+protected:
   const QString m_command;
   const QString m_variableData;
   const QString m_iteml;

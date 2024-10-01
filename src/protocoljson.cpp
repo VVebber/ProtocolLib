@@ -54,17 +54,17 @@ Command ProtocolJSON::decode(QByteArray messageCode)
 {
   QJsonDocument message;
   message = QJsonDocument::fromJson(messageCode);
-  Command command(Command::CommandType(message["command"].toInt()));
-  if(message.object().contains("VariableData"))
+  Command command(Command::CommandType(message[m_command].toInt()));
+  if(message.object().contains(m_variableData))
   {
-    if(message["VariableData"].isArray())
+    if(message[m_variableData].isArray())
     {
-      for(int i = 0; i < message["VariableData"].toArray().size(); i++)
-      command.addVariableData(message["VariableData"].toArray().at(i).toInt());
+      for(int i = 0; i < message[m_variableData].toArray().size(); i++)
+      command.addVariableData(message[m_variableData].toArray().at(i).toInt());
     }
     else
     {
-      command.setVariableData(message["VariableData"].toString());
+      command.setVariableData(message[m_variableData].toString());
     }
   }
   return command;
