@@ -2,8 +2,9 @@
 #define COMMAND_H
 #include <QString>
 
-#define pointGraphing = "point for graphing function";
-#define startOutOrFin = "setting draw point";
+QString pointGraphing = "point for graphing function";
+QString drawStartOrFin = "setting draw point";
+QString typeSignal = "setting draw point";
 
 class Command
 {
