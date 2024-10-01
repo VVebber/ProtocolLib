@@ -56,7 +56,14 @@ Command ProtocolJSON::decode(QByteArray messageCode)
   Command command(message["command"].toString());
   if(message.object().contains("VariableData"))
   {
-    command.setVariableData(message["VariableData"].toString());
+    if(message["VariableData"].toArray().size() < 2)
+    {
+      command.setVariableData(message["VariableData"].toString());
+    }
+    else
+    {
+
+    }
   }
   return command;
 }
