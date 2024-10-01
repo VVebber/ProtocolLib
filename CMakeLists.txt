@@ -17,4 +17,5 @@ add_library(protocol SHARED
   src/protocolxml.cpp  src/protocolxml.h
   src/command.cpp src/command.h)
 
+target_include_directories(protocol PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_link_libraries(protocol PUBLIC Qt5::Core Qt5::Network Qt5::Xml)
