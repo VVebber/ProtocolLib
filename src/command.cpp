@@ -1,6 +1,7 @@
 #include "command.h"
+#include <QDebug>
 
-Command::Command(QString command) : m_command(command)
+Command::Command(CommandType command) : m_command(command)
 {
   m_variableData = "";
 }
@@ -8,6 +9,11 @@ Command::Command(QString command) : m_command(command)
 bool Command::isCommand(QString str)
 {
   return m_command == str;
+}
+
+bool Command::isCommand(CommandType str)
+{
+
 }
 
 int Command::size(){
@@ -19,15 +25,17 @@ void Command::setVariableData(QString str)
   m_variableData = str;
 }
 
-void Command::setVariableData(float integer)
-{
-  QString p;
-  m_variableData.toList().push_back(p.setNum(integer));
-}
+// void Command::setVariableData(float integer)
+// {
+//   QString p;
+//   m_variableData.toList().push_back(p.setNum(integer));
+// }
 
-void Command::setVariableData(int integer)
+void Command::addVariableData(int integer)
 {
-  m_variableData.toList().push_back(QString::number(integer));
+  QList<QVariant> list = m_variableData.toList();
+  list.push_back(integer);
+  m_variableData = list;
 }
 
 QString Command::getVariableData()
@@ -35,7 +43,7 @@ QString Command::getVariableData()
   return m_variableData.toString();
 }
 
-int Command::getVariableDataMas(int i)
+int Command::atVariableData(int i)
 {
   return m_variableData.toList().at(i).toInt();
 }

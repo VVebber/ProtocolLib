@@ -8,7 +8,7 @@ class ProtocolXML: public Protocol
 public:
   ProtocolXML();
 
-  QByteArray encode(QString command, QVariant data) override;
+  QByteArray encode(Command::CommandType command, QVariant data) override;
   Command decode(QByteArray messageCode) override;
 };
 

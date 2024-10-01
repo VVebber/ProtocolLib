@@ -10,14 +10,14 @@ ProtocolXML::ProtocolXML()
 }
 
 
-QByteArray ProtocolXML::encode(QString command, QVariant data)
+QByteArray ProtocolXML::encode(Command::CommandType command, QVariant data)
 {
 
   QDomDocument XMLDocument;
   QDomElement root = XMLDocument.createElement("task");
 
   QDomElement commandXML = XMLDocument.createElement("command");
-  QDomText commandXMLText = XMLDocument.createTextNode(command);
+  QDomText commandXMLText = XMLDocument.createTextNode(QString(command));
 
   commandXML.appendChild(commandXMLText);
   root.appendChild(commandXML);
@@ -78,7 +78,7 @@ Command ProtocolXML::decode(QByteArray messageCode)
   QString command  = box.elementsByTagName("command").at(0).toElement().childNodes().at(0).toText().data();
   QString VariableData = box.elementsByTagName("VariableData").at(0).toElement().childNodes().at(0).toText().data();
 
-  Command com(command);
+  Command com(Command::CommandType(command.toInt()));
   if(!VariableData.isEmpty())
   {
     com.setVariableData(VariableData);

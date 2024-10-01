@@ -3,6 +3,7 @@
 
 #include <QDomDocument>
 #include <QJsonDocument>
+#include "command.h"
 
 class QJsonObject;
 class QTcpSocket;
@@ -14,7 +15,7 @@ class Protocol : public QJsonDocument, public QDomDocument
 public:
   Protocol() = default;
 
-  virtual QByteArray encode(QString command, QVariant data) = 0;
+  virtual QByteArray encode(Command::CommandType command, QVariant data) = 0;
 
   virtual Command decode(QByteArray messageCode) = 0;
 

@@ -8,7 +8,7 @@
 
 ProtocolJSON::ProtocolJSON() {}
 
-QByteArray ProtocolJSON::encode(QString command, QVariant data)
+QByteArray ProtocolJSON::encode(Command::CommandType command, QVariant data)
 {
   QJsonObject message;
   message["command"] = command;
@@ -53,16 +53,17 @@ Command ProtocolJSON::decode(QByteArray messageCode)
 {
   QJsonDocument message;
   message = QJsonDocument::fromJson(messageCode);
-  Command command(message["command"].toString());
+  Command command(Command::CommandType(message["command"].toInt()));
   if(message.object().contains("VariableData"))
   {
-    if(message["VariableData"].toArray().size() < 2)
+    if(message["VariableData"].isArray())
     {
-      command.setVariableData(message["VariableData"].toString());
+      for(int i = 0; i < message["VariableData"].toArray().size(); i++)
+      command.addVariableData(message["VariableData"].toArray().at(i).toInt());
     }
     else
     {
-
+      command.setVariableData(message["VariableData"].toString());
     }
   }
   return command;
