@@ -21,12 +21,13 @@ void Command::setVariableData(QString str)
 
 void Command::setVariableData(float integer)
 {
-  m_variableData.toList().push_back(QString::number(Qinteger));
+  QString p;
+  m_variableData.toList().push_back(p.setNum(integer));
 }
 
 void Command::setVariableData(int integer)
 {
-  m_variableData.toList().push_back(integer);
+  m_variableData.toList().push_back(QString::number(integer));
 }
 
 QString Command::getVariableData()
