@@ -11,22 +11,22 @@ ProtocolJSON::ProtocolJSON() {}
 QByteArray ProtocolJSON::encode(Command::CommandType command, QVariant data)
 {
   QJsonObject message;
-  message["command"] = command;
+  message[m_command] = command;
 
   if(data.isValid())
   {
 
     if (data.canConvert<QString>())
     {
-      message["VariableData"] = data.toString();
+      message[m_variableData] = data.toString();
     }
     else if (data.canConvert<int>())
     {
-      message["VariableData"] = data.toInt();
+      message[m_variableData] = data.toInt();
     }
     else if (data.canConvert<double>())
     {
-      message["VariableData"] = data.toDouble();
+      message[m_variableData] = data.toDouble();
     }
     else if (data.canConvert<QVariantList>())
     {
@@ -37,7 +37,7 @@ QByteArray ProtocolJSON::encode(Command::CommandType command, QVariant data)
         int integer = v.toInt();
         mas.append(integer);
       }
-      message["VariableData"] = mas;
+      message[m_variableData] = mas;
     }
     else
     {
