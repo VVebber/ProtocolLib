@@ -10,7 +10,6 @@ public:
 
   QByteArray encode(QString command, QVariant data) override;
   Command decode(QByteArray messageCode) override;
-
 };
 
 #endif // PROTOCOLJSON_H
