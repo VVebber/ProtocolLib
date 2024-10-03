@@ -49,7 +49,7 @@ QByteArray ProtocolJSON::encode(Command::CommandType command, QVariant data)
   }
 
   QJsonDocument document(message);
-  qDebug()<<document;
+  // qDebug()<<document;
   return document.toJson();
 }
 
@@ -81,15 +81,13 @@ Command ProtocolJSON::getNextCommand()
 {
   if(m_data.size() == 0)
   {
-    qDebug()<<"command size == 0";
+    qDebug()<<"error: commandlist size == 0";
     Command command(Command::CommandType::TypeSignalSetting);
     return command;
   }
 
   QJsonDocument message;
   message = QJsonDocument::fromJson(m_data.dequeue());
-
-  qDebug()<<"1)  "<<message[COMMAND].toInt();
 
   Command command(Command::CommandType(message[COMMAND].toInt()));
   if(message.object().contains(VARIABLEDATA))
