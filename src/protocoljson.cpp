@@ -7,15 +7,13 @@
 #include <QTcpSocket>
 #include <QJsonArray>
 
-ProtocolJSON::ProtocolJSON() {}
+ProtocolJSON::ProtocolJSON() {
+  m_dataError.clear();
+}
 
 QByteArray ProtocolJSON::encode(Command::CommandType command, QVariant data)
 {
   QJsonObject message;
-<<<<<<< HEAD
-=======
-  message["empty"] = "empty_ms111111111111111111111114444444f";
->>>>>>> c7a2a6734bdcf978f2a9799bc065ae468463c9ab
   message[COMMAND] = command;
 
   if(data.isValid())
@@ -55,29 +53,51 @@ QByteArray ProtocolJSON::encode(Command::CommandType command, QVariant data)
   return document.toJson();
 }
 
-Command ProtocolJSON::decode(QByteArray messageCode)
+void ProtocolJSON::addData(QByteArray data)
 {
+  if(!data.isEmpty())
+  {
+    m_dataError += data;
+  }
+  QByteArray subData;
+  if(m_dataError.indexOf('{') == 0 && m_dataError.indexOf('}') != -1)
+  {
+    subData = m_dataError.mid((0), m_dataError.indexOf('}') + 1);
+    if(!(countSub(subData,'{') ==  1 && countSub(subData,'{') == countSub(subData,'}')))
+    {
+      m_dataError.remove(0, m_dataError.indexOf('{', 1));
+      return;
+    }
+  }
+
+  if(subData.contains(COMMAND) && subData.contains(VARIABLEDATA))
+  {
+    m_data.push_back(subData);
+    m_dataError.remove(0, m_dataError.indexOf('}') + 2);
+  }
+}
+
+Command ProtocolJSON::getNextCommand()
+{
+  if(m_data.size() == 0)
+  {
+    qDebug()<<"command size == 0";
+    Command command(Command::CommandType::TypeSignalSetting);
+    return command;
+  }
+
   QJsonDocument message;
-  message = QJsonDocument::fromJson(messageCode);
-<<<<<<< HEAD
+  message = QJsonDocument::fromJson(m_data.dequeue());
 
   qDebug()<<"1)  "<<message[COMMAND].toInt();
-  QString s(messageCode);
-  qDebug()<<"2)  "<<s;
 
-=======
->>>>>>> c7a2a6734bdcf978f2a9799bc065ae468463c9ab
   Command command(Command::CommandType(message[COMMAND].toInt()));
   if(message.object().contains(VARIABLEDATA))
   {
     if(message[VARIABLEDATA].isArray())
     {
       for(int i = 0; i < message[VARIABLEDATA].toArray().size(); i++)
-<<<<<<< HEAD
         command.addVariableData(message[VARIABLEDATA].toArray().at(i).toInt());
-=======
-      command.addVariableData(message[VARIABLEDATA].toArray().at(i).toInt());
->>>>>>> c7a2a6734bdcf978f2a9799bc065ae468463c9ab
     }
     else
     {

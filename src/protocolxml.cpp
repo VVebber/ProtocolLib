@@ -66,10 +66,16 @@ QByteArray ProtocolXML::encode(Command::CommandType command, QVariant data)
   return XMLDocument.toByteArray(0);
 }
 
-Command ProtocolXML::decode(QByteArray messageCode)
+void ProtocolXML::addData(QByteArray data)
+{
+
+}
+
+
+Command ProtocolXML::getNextCommand()
 {
   QDomDocument main;
-  main.setContent(messageCode);
+  main.setContent(m_data.dequeue());
   QDomElement box = main.documentElement().toElement();
 
   QString command  = box.elementsByTagName(COMMAND).at(0).toElement().childNodes().at(0).toText().data();
