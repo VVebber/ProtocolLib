@@ -1,5 +1,6 @@
 #include "protocoljson.h"
 #include "command.h"
+#include "constants.h"
 
 #include <QSequentialIterable>
 #include <QJsonObject>
@@ -11,22 +12,22 @@ ProtocolJSON::ProtocolJSON() {}
 QByteArray ProtocolJSON::encode(Command::CommandType command, QVariant data)
 {
   QJsonObject message;
-  message[m_command] = command;
+  message[COMMAND] = command;
 
   if(data.isValid())
   {
 
     if (data.canConvert<QString>())
     {
-      message[m_variableData] = data.toString();
+      message[VARIABLEDATA] = data.toString();
     }
     else if (data.canConvert<int>())
     {
-      message[m_variableData] = data.toInt();
+      message[VARIABLEDATA] = data.toInt();
     }
     else if (data.canConvert<double>())
     {
-      message[m_variableData] = data.toDouble();
+      message[VARIABLEDATA] = data.toDouble();
     }
     else if (data.canConvert<QVariantList>())
     {
@@ -37,7 +38,7 @@ QByteArray ProtocolJSON::encode(Command::CommandType command, QVariant data)
         int integer = v.toInt();
         mas.append(integer);
       }
-      message[m_variableData] = mas;
+      message[VARIABLEDATA] = mas;
     }
     else
     {
@@ -54,17 +55,22 @@ Command ProtocolJSON::decode(QByteArray messageCode)
 {
   QJsonDocument message;
   message = QJsonDocument::fromJson(messageCode);
-  Command command(Command::CommandType(message[m_command].toInt()));
-  if(message.object().contains(m_variableData))
+
+  qDebug()<<"1)  "<<message[COMMAND].toInt();
+  QString s(messageCode);
+  qDebug()<<"2)  "<<s;
+
+  Command command(Command::CommandType(message[COMMAND].toInt()));
+  if(message.object().contains(VARIABLEDATA))
   {
-    if(message[m_variableData].isArray())
+    if(message[VARIABLEDATA].isArray())
     {
-      for(int i = 0; i < message[m_variableData].toArray().size(); i++)
-      command.addVariableData(message[m_variableData].toArray().at(i).toInt());
+      for(int i = 0; i < message[VARIABLEDATA].toArray().size(); i++)
+        command.addVariableData(message[VARIABLEDATA].toArray().at(i).toInt());
     }
     else
     {
-      command.setVariableData(message[m_variableData].toString());
+      command.setVariableData(message[VARIABLEDATA].toString());
     }
   }
   return command;

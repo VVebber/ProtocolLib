@@ -13,7 +13,7 @@ class Command;
 class Protocol : public QJsonDocument, public QDomDocument
 {
 public:
-  Protocol();
+  Protocol() = default;
 
   virtual QByteArray encode(Command::CommandType command, QVariant data) = 0;
 
@@ -22,9 +22,7 @@ public:
   virtual ~Protocol() = default;
 
 protected:
-  const QString m_command;
-  const QString m_variableData;
-  const QString m_iteml;
+
 };
 
 #endif // PROTOCOL_H
