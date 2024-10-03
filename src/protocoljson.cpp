@@ -12,6 +12,10 @@ ProtocolJSON::ProtocolJSON() {}
 QByteArray ProtocolJSON::encode(Command::CommandType command, QVariant data)
 {
   QJsonObject message;
+<<<<<<< HEAD
+=======
+  message["empty"] = "empty_ms111111111111111111111114444444f";
+>>>>>>> c7a2a6734bdcf978f2a9799bc065ae468463c9ab
   message[COMMAND] = command;
 
   if(data.isValid())
@@ -55,18 +59,25 @@ Command ProtocolJSON::decode(QByteArray messageCode)
 {
   QJsonDocument message;
   message = QJsonDocument::fromJson(messageCode);
+<<<<<<< HEAD
 
   qDebug()<<"1)  "<<message[COMMAND].toInt();
   QString s(messageCode);
   qDebug()<<"2)  "<<s;
 
+=======
+>>>>>>> c7a2a6734bdcf978f2a9799bc065ae468463c9ab
   Command command(Command::CommandType(message[COMMAND].toInt()));
   if(message.object().contains(VARIABLEDATA))
   {
     if(message[VARIABLEDATA].isArray())
     {
       for(int i = 0; i < message[VARIABLEDATA].toArray().size(); i++)
+<<<<<<< HEAD
         command.addVariableData(message[VARIABLEDATA].toArray().at(i).toInt());
+=======
+      command.addVariableData(message[VARIABLEDATA].toArray().at(i).toInt());
+>>>>>>> c7a2a6734bdcf978f2a9799bc065ae468463c9ab
     }
     else
     {

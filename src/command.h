@@ -11,9 +11,9 @@ class Command
 public:
   enum CommandType
   {
-    PointGraphing,
-    DrawStartOrFin,
-    TypeSignalSetting
+    PointGraphing=200,
+    DrawStartOrFin=300,
+    TypeSignalSetting=400
   };
 
   Command(CommandType command);
