@@ -18,7 +18,7 @@ QByteArray ProtocolXML::encode(Command::CommandType command, QVariant data)
   QDomElement root = XMLDocument.createElement("task");
 
   QDomElement commandXML = XMLDocument.createElement(COMMAND);
-  QDomText commandXMLText = XMLDocument.createTextNode(QString(command));
+  QDomText commandXMLText = XMLDocument.createTextNode(QString::number(command));
 
   commandXML.appendChild(commandXMLText);
   root.appendChild(commandXML);
@@ -63,23 +63,18 @@ QByteArray ProtocolXML::encode(Command::CommandType command, QVariant data)
 
   qDebug()<<root.elementsByTagName(VARIABLEDATA).at(0).toElement().childNodes().at(0).toText().data();
 
-  return XMLDocument.toByteArray(0);
+  return STX + XMLDocument.toByteArray(0) + ETX;
 }
 
-void ProtocolXML::addData(QByteArray data)
+Command ProtocolXML::decode(QByteArray commandData)
 {
-
-}
-
-
-Command ProtocolXML::getNextCommand()
-{
+  Command command;
   QDomDocument main;
-  main.setContent(m_data.dequeue());
-  QDomElement box = main.documentElement().toElement();
 
-  QString command  = box.elementsByTagName(COMMAND).at(0).toElement().childNodes().at(0).toText().data();
-  Command com(Command::CommandType(command.toInt()));
+  main.setContent(commandData);
+  QDomElement box = main.documentElement().toElement();
+  int commandInteger = box.elementsByTagName(COMMAND).at(0).toElement().childNodes().at(0).toText().data().toInt();
+  command.setCommandType((Command::CommandType(commandInteger)));
 
   QDomNodeList VariableData = box.elementsByTagName(VARIABLEDATA).at(0).childNodes();
   if(box.elementsByTagName(VARIABLEDATA).at(0).toElement().childNodes().at(0).toText().data().isEmpty())
@@ -88,12 +83,12 @@ Command ProtocolXML::getNextCommand()
     {
       for (int i = 0; i < VariableData.size(); ++i)
       {
-        com.addVariableData(VariableData.at(i).toElement().childNodes().at(0).toText().data().toInt());
+        command.addVariableData(VariableData.at(i).toElement().childNodes().at(0).toText().data().toInt());
       }
     } else
     {
-      com.setVariableData(VariableData.at(0).toElement().childNodes().at(0).toText().data());
+      command.setVariableData(VariableData.at(0).toElement().childNodes().at(0).toText().data());
     }
   }
-  return com;
+  return command;
 }

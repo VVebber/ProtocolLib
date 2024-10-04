@@ -18,18 +18,17 @@ public:
 
   bool isDataEmpty();
   virtual QByteArray encode(Command::CommandType command, QVariant data) = 0;
-  virtual Command getNextCommand() = 0;
-  virtual void addData(QByteArray data = QByteArray()) = 0;
+  void addData(QByteArray data = QByteArray());
+  Command getNextCommand();
 
   virtual ~Protocol() = default;
 
 protected:
-  int countSub(const QString str, const QString subStr);
-  int countSub(const QByteArray str, const char subStr);
 
-protected:
-  QQueue<QByteArray> m_data;
-  QByteArray m_dataError;
+  QByteArray m_dataBuffer;
+
+private:
+  virtual Command decode(QByteArray commandData) = 0;
 };
 
 #endif // PROTOCOL_H

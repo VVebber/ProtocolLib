@@ -9,9 +9,9 @@ public:
   ProtocolXML();
 
   QByteArray encode(Command::CommandType command, QVariant data) override;
-  Command getNextCommand() override;
-  void addData(QByteArray data = QByteArray()) override;
 
+private:
+  Command decode(QByteArray commandData) override;
 };
 
 #endif // PROTOCOLXML_H

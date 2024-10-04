@@ -17,15 +17,17 @@ public:
   };
 
   Command(CommandType command);
+  Command();
 
   bool isCommand(QString str);
   bool isCommand(CommandType str);
+  bool isValid();
   bool isCategory(QString str);
   int size();
 
-  void setVariableData(QString str);
-  // void setVariableData(float integer);
   void addVariableData(int inteter);
+  void setVariableData(QString str);
+  void setCommandType(CommandType type);
   QString getVariableData();
   CommandType getCommandType();
   int atVariableData(int i);

@@ -1,41 +1,34 @@
 #include "protocol.h"
-#include "Protocol_global.h"
+#include "constants.h"
 
-bool Protocol::isDataEmpty()
+Command Protocol::getNextCommand()
 {
-  return m_dataError.isEmpty();
+  QByteArray::iterator openCommand = std::find(m_dataBuffer.begin(), m_dataBuffer.end(), STX);
+  if(openCommand == m_dataBuffer.end())
+  {
+    m_dataBuffer.clear();
+    return Command();
+  }
+
+  QByteArray::iterator closeCommand = std::find(openCommand, m_dataBuffer.end(), ETX);
+  if(closeCommand == m_dataBuffer.end())
+  {
+    return Command();
+  }
+
+  QByteArray commandData((const char*)openCommand, int(closeCommand - openCommand + 1));
+  m_dataBuffer.remove( 0, int(closeCommand - openCommand + 1));
+
+  QByteArray::reverse_iterator lastOpen = std::find(commandData.rbegin(), commandData.rend(), STX);
+  commandData.remove(0, int(lastOpen.base() - commandData.begin()));
+
+  // commandData.remove(0,1);
+  commandData.chop(1);
+  return decode(commandData);
+
 }
 
-int Protocol::countSub(const QString str, const QString subStr)
+void Protocol::addData(QByteArray data)
 {
-  int x =0;
-  for(int i = -1;; )
-  {
-    i = str.indexOf(subStr, i + 1);
-    if(i  == -1)
-    {
-      return x;
-    }
-    else
-    {
-      x++;
-    }
-  }
-}
-
-int Protocol::countSub(const QByteArray str, const char subStr)
-{
-  int x =0;
-  for(int i = -1;; )
-  {
-    i = str.indexOf(subStr, i + 1);
-    if(i  == -1)
-    {
-      return x;
-    }
-    else
-    {
-      x++;
-    }
-  }
+  m_dataBuffer += data;
 }

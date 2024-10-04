@@ -8,7 +8,7 @@
 #include <QJsonArray>
 
 ProtocolJSON::ProtocolJSON() {
-  m_dataError.clear();
+  m_dataBuffer.clear();
 }
 
 QByteArray ProtocolJSON::encode(Command::CommandType command, QVariant data)
@@ -49,58 +49,34 @@ QByteArray ProtocolJSON::encode(Command::CommandType command, QVariant data)
   }
 
   QJsonDocument document(message);
-  // qDebug()<<document;
-  return document.toJson();
+  return STX + document.toJson() + ETX;
 }
 
-void ProtocolJSON::addData(QByteArray data)
+Command ProtocolJSON::decode(QByteArray commandData)
 {
-  if(!data.isEmpty())
-  {
-    m_dataError += data;
-  }
-  QByteArray subData;
-  if(m_dataError.indexOf('{') == 0 && m_dataError.indexOf('}') != -1)
-  {
-    subData = m_dataError.mid((0), m_dataError.indexOf('}') + 1);
-    if(!(countSub(subData,'{') ==  1 && countSub(subData,'{') == countSub(subData,'}')))
-    {
-      m_dataError.remove(0, m_dataError.indexOf('{', 1));
-      return;
-    }
-  }
-
-  if(subData.contains(COMMAND) && subData.contains(VARIABLEDATA))
-  {
-    m_data.push_back(subData);
-    m_dataError.remove(0, m_dataError.indexOf('}') + 2);
-  }
-}
-
-Command ProtocolJSON::getNextCommand()
-{
-  if(m_data.size() == 0)
-  {
-    qDebug()<<"error: commandlist size == 0";
-    Command command(Command::CommandType::TypeSignalSetting);
-    return command;
-  }
+  Command command;
 
   QJsonDocument message;
-  message = QJsonDocument::fromJson(m_data.dequeue());
 
-  Command command(Command::CommandType(message[COMMAND].toInt()));
+  message = QJsonDocument::fromJson(commandData);
+
+  command.setCommandType(Command::CommandType(message[COMMAND].toInt()));
   if(message.object().contains(VARIABLEDATA))
   {
+
     if(message[VARIABLEDATA].isArray())
     {
       for(int i = 0; i < message[VARIABLEDATA].toArray().size(); i++)
+      {
         command.addVariableData(message[VARIABLEDATA].toArray().at(i).toInt());
+      }
     }
+
     else
     {
       command.setVariableData(message[VARIABLEDATA].toString());
     }
   }
+
   return command;
 }
